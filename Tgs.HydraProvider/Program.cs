@@ -1,10 +1,30 @@
 ﻿using System.Security.Claims;
+using FluentdForward.OpenTelemetry.MessagePack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Tgs.HydraProvider;
 using Tgs.HydraProvider.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging
+	.AddOpenTelemetry(options =>
+	{
+		options.IncludeFormattedMessage = true;
+		options.ParseStateValues = true;
+		_ = options.AddFluentdForwardExporter(fluentOptions =>
+		{
+			var nodeIp = builder.Configuration.GetValue<string>("NODE_IP")!;
+			fluentOptions.Host = nodeIp;
+			fluentOptions.Tag = builder.Configuration.GetValue<string>("OTEL_SERVICE_NAME")!;
+			fluentOptions.UseMessagePack(LogRecordFormatterResolver.GetResolverInstanceWithExtendInfo(
+				"MachineName",
+				() => Environment.MachineName));
+		});
+	});
 
 builder.Services
 	.AddAuthentication()
@@ -17,6 +37,31 @@ builder.Services
 		.AddLoggingHandler<IHydraAdminClient>())
 	.AddHydraProviderRepositories(dbBuilder => dbBuilder
 		.UseNpgsql("name=Tgs"));
+
+builder.Services
+	.AddOpenTelemetry()
+	.ConfigureResource(resourceBuilder => resourceBuilder
+		.AddEnvironmentVariableDetector())
+	.WithTracing(tracerBuilder => tracerBuilder
+		.AddSource("Tgs.*")
+		.AddSource("TGS.*")
+		.AddAspNetCoreInstrumentation(options => options.Filter =
+			httpContext => !httpContext.Request.Path.HasValue
+				|| !httpContext.Request.Path.StartsWithSegments("/swagger")
+				&& !httpContext.Request.Path.StartsWithSegments("/healthz")
+				&& !httpContext.Request.Path.StartsWithSegments("/metrics")
+				&& !new[] { "html", "ico", "png", "jpg" }.Any(
+					ext => httpContext.Request.Path.Value.EndsWith($".{ext}")))
+		.AddHttpClientInstrumentation()
+		.AddProfileViewExporter()
+		.AddOtlpExporter())
+	.WithMetrics(meterBuilder => meterBuilder
+		.AddRuntimeInstrumentation()
+		.AddAspNetCoreInstrumentation()
+		.AddHttpClientInstrumentation()
+		.AddOtlpExporter())
+	.Services
+	.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -62,4 +107,7 @@ app.MapGet(
 
 		return Results.Redirect(consentResponse.RedirectTo.ToString());
 	});
+app.MapHealthChecks("/healthz");
+app.MapProfileViewer();
+
 app.Run();

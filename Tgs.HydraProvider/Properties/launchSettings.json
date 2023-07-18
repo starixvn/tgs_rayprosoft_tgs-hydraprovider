@@ -1,29 +1,37 @@
 ﻿{
-  "profiles": {
-    "http": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5114"
-    },
-    "https": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7027;http://localhost:5114"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "publishAllPorts": true,
-      "useSSL": true
-    }
-  }
+	"profiles": {
+		"http": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"OTEL_SERVICE_NAME": "Hydra-Provider(local)",
+				"NODE_IP": "otel.rpgp.cc"
+			},
+			"dotnetRunMessages": true,
+			"applicationUrl": "http://localhost:5114"
+		},
+		"https": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"OTEL_SERVICE_NAME": "Hydra-Provider(local)",
+				"NODE_IP": "otel.rpgp.cc"
+			},
+			"dotnetRunMessages": true,
+			"applicationUrl": "https://localhost:7027;http://localhost:5114"
+		},
+		"Docker": {
+			"commandName": "Docker",
+			"launchBrowser": true,
+			"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+			"publishAllPorts": true,
+			"useSSL": true,
+			"environmentVariables": {
+				"OTEL_SERVICE_NAME": "Hydra-Provider(local)",
+				"NODE_IP": "otel.rpgp.cc"
+			}
+		}
+	}
 }
