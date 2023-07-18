@@ -12,12 +12,16 @@ variables:
 stages:
   - build
   - publish
+  - unit-test
   - deploy-dev
   - deploy-staging
   - deploy-prod
 
 build-code:
   extends: .build-code-template
+
+unit-test:
+  extends: .unit-test
 
 push-docker-image:
   extends: .push-docker-image-template
