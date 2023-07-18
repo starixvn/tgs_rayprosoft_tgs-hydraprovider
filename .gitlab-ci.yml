@@ -21,7 +21,7 @@ build-code:
   extends: .build-code-template
 
 unit-test:
-  extends: .unit-test
+  extends: .unit-test-template
 
 push-docker-image:
   extends: .push-docker-image-template
