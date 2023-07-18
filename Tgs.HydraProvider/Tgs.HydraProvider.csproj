@@ -1,19 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <SqlQueryToolsConnectionString />
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SqlQueryToolsConnectionString />
+		<UserSecretsId>b1e210af-e06b-4cac-9739-bbf96bfa8d93</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileBuildArguments>--build-arg "BuildConfiguration=$(Configuration)"</DockerfileBuildArguments>
+		<DockerfileTag Condition="$(DockerfileTag) == ''">pgtgs/hydra-provider</DockerfileTag>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Tgs.WebApi.Toolkits" Version="0.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+		<PackageReference Include="Tgs.WebApi.Toolkits" Version="0.2.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\HydraProvider.Core\HydraProvider.Core.csproj" />
-    <ProjectReference Include="..\HydraProvider.Repositories\HydraProvider.Repositories.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\HydraProvider.Core\HydraProvider.Core.csproj" />
+		<ProjectReference Include="..\HydraProvider.Repositories\HydraProvider.Repositories.csproj" />
+	</ItemGroup>
 
 </Project>
