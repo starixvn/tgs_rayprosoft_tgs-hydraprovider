@@ -1,0 +1,13 @@
+﻿[
+   {
+      "SchemaName": "dbo",
+      "Tables": [
+         {
+            "Columns": [ ],
+            "Name": "accounts",
+            "NewName": "AccountRow"
+         }
+      ],
+      "UseSchemaName": false
+   }
+]
