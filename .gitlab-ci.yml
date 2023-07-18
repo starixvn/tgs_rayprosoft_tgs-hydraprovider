@@ -12,7 +12,7 @@ variables:
 stages:
   - build
   - publish
-  - unit-test
+  - test
   - deploy-dev
   - deploy-staging
   - deploy-prod
