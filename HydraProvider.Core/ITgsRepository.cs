@@ -7,4 +7,14 @@ public interface ITgsRepository
 		string system,
 		string userName,
 		CancellationToken cancellationToken = default);
+
+	ValueTask AddAccountEventAsync(
+		AccountEvent accountEvent,
+		CancellationToken cancellationToken = default);
+
+	ValueTask UpsertAccountAsync(
+		AccountSnapshot snapshot,
+		Guid snapshotId,
+		DateTime updatedOn,
+		CancellationToken cancellationToken = default);
 }

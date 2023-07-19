@@ -30,6 +30,8 @@ builder.Services
 	.AddAuthentication()
 	.AddHydraProviderBasic()
 	.Services
+	.AddControllers()
+	.Services
 	.AddAuthorization()
 	.AddHydraProviders(httpBuilder => httpBuilder
 		.ConfigureHttpClient(http => http.BaseAddress =
@@ -37,6 +39,11 @@ builder.Services
 		.AddLoggingHandler<IHydraAdminClient>())
 	.AddHydraProviderRepositories(dbBuilder => dbBuilder
 		.UseNpgsql("name=Tgs"));
+
+builder.Services
+	.AddSwaggerGen(options => options.SwaggerDoc(
+		"v1",
+		new Microsoft.OpenApi.Models.OpenApiInfo { Title = "HydraProvider API", Version = "v1" }));
 
 builder.Services
 	.AddOpenTelemetry()
@@ -107,7 +114,10 @@ app.MapGet(
 
 		return Results.Redirect(consentResponse.RedirectTo.ToString());
 	});
+app.MapControllers();
 app.MapHealthChecks("/healthz");
 app.MapProfileViewer();
+app.UseSwaggerUI();
+app.MapSwagger();
 
 app.Run();

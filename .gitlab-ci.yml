@@ -58,7 +58,11 @@ deploy-dev:
                 "host": "dev-session.rpgp.cc",
                 "paths": [
                   {
-                    "path": "/",
+                    "path": "/login",
+                    "pathType": "ImplementationSpecific"
+                  },
+                  {
+                    "path": "/consent",
                     "pathType": "ImplementationSpecific"
                   }
                 ]

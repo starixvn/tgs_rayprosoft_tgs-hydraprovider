@@ -26,6 +26,7 @@ namespace Tgs.HydraProvider.Repositories.Entities.Configurations
             entity.Property(e => e.BrandId).HasColumnName("brand_id");
             entity.Property(e => e.CreatedOn).HasColumnName("created_on");
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
+            entity.Property(e => e.SnapshotId).HasColumnName("snapshot_id");
             entity.Property(e => e.System).HasColumnName("system");
             entity.Property(e => e.UpdatedOn).HasColumnName("updated_on");
             entity.Property(e => e.UserName).HasColumnName("user_name");

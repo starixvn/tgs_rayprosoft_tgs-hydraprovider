@@ -22,4 +22,6 @@ public partial class AccountRow
     public DateTime UpdatedOn { get; set; }
 
     public string UserName { get; set; } = null!;
+
+    public Guid SnapshotId { get; set; }
 }
