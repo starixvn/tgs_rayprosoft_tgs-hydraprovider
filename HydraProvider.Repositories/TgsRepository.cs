@@ -48,6 +48,8 @@ internal class TgsRepository : ITgsRepository
 				CreatedOn = accountEvent.CreatedOn
 			},
 			cancellationToken).ConfigureAwait(false);
+
+		_ = await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 	}
 
 	public async ValueTask UpsertAccountAsync(
@@ -68,7 +70,7 @@ internal class TgsRepository : ITgsRepository
 		row.BrandId = snapshot.BrandId;
 		row.System = snapshot.System;
 		row.Algorithm = snapshot.Algorithm;
-		row.UserName = row.UserName;
+		row.UserName = snapshot.UserName;
 		row.PasswordHash = snapshot.PasswordHash;
 		row.CreatedOn = snapshot.CreatedOn.ToUniversalTime();
 		row.UpdatedOn = updatedOn.ToUniversalTime();
