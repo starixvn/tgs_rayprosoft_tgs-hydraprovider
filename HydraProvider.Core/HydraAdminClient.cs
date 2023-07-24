@@ -76,4 +76,18 @@ internal class HydraAdminClient : IHydraAdminClient
 				.Where(resData => resData is not null)
 				.Select(resData => resData!))
 			.FirstAsync(cancellationToken);
+
+	public ValueTask<LoginResponse> RejectLoginAsync(string challenge, CancellationToken cancellationToken = default)
+		=> _httpClient.PutAsync(
+			$"/admin/oauth2/auth/requests{QueryString.Create("login_challenge", challenge)}",
+			null,
+			cancellationToken)
+			.ToAsyncEnumerable()
+			.Do(response => response.EnsureSuccessStatusCode())
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<LoginResponse>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable()
+				.Where(resData => resData is not null)
+				.Select(resData => resData!))
+			.FirstAsync(cancellationToken);
 }

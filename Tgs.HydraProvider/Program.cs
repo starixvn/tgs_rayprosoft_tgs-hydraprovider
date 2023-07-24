@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿using System.Xml.Linq;
 using FluentdForward.OpenTelemetry.MessagePack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +7,8 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Tgs.HydraProvider;
 using Tgs.HydraProvider.DependencyInjection;
+using Tgs.HydraProvider.ViewModels;
+using Yarp.ReverseProxy.Forwarder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,8 @@ builder.Services
 	.Services
 	.AddControllers()
 	.Services
+	.AddCors(cors => cors
+		.AddDefaultPolicy(p => p.WithOrigins("*")))
 	.AddAuthorization()
 	.AddHydraProviders(httpBuilder => httpBuilder
 		.ConfigureHttpClient(http => http.BaseAddress =
@@ -72,26 +76,53 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseCors();
 app.MapGet("/", () => "Hello World!");
-app.MapGet(
-	"/login",
-	async (
-		HttpContext httpContext,
-		[FromServices] IHydraAdminClient adminClient,
-		[FromQuery(Name = "login_challenge")] string loginChalleng) =>
-	{
-		var loginResponse = await adminClient.AcceptLoginAsync(
-			loginChalleng,
-			httpContext.User.Identity!.Name!,
-			new LoginContext(
-				Guid.Parse(httpContext.User.FindFirstValue("brand_id")!),
-				httpContext.User.FindFirstValue("system")!,
-				Guid.Parse(httpContext.User.FindFirstValue("account_id")!)),
-			httpContext.RequestAborted).ConfigureAwait(false);
+//app.MapGet(
+//	"/login",
+//	async (
+//		HttpContext httpContext,
+//		[FromServices] IHydraAdminClient adminClient,
+//		[FromServices] ILoginPageForwarder forwarder,
+//		[FromQuery(Name = "login_challenge")] string loginChalleng) =>
+//	{
+//		var error = await forwarder.SendAsync(
+//			httpContext,
+//			"http://localhost:4200",
+//			httpContext.RequestAborted).ConfigureAwait(false);
 
-		return Results.Redirect(loginResponse.RedirectTo.ToString());
-	})
-	.RequireAuthorization();
+//		if (error != ForwarderError.None)
+//		{
+//			var errorFeature = httpContext.Features.Get<IForwarderErrorFeature>();
+//			var exception = errorFeature?.Exception;
+//		}
+
+//		//var loginResponse = await adminClient.AcceptLoginAsync(
+//		//	loginChalleng,
+//		//	httpContext.User.Identity!.Name!,
+//		//	new LoginContext(
+//		//		Guid.Parse(httpContext.User.FindFirstValue("brand_id")!),
+//		//		httpContext.User.FindFirstValue("system")!,
+//		//		Guid.Parse(httpContext.User.FindFirstValue("account_id")!)),
+//		//	httpContext.RequestAborted).ConfigureAwait(false);
+
+//		//return Results.Redirect(loginResponse.RedirectTo.ToString());
+//	});
+//app.MapPost(
+//	"/login",
+//	async (
+//		HttpContext httpContext,
+//		[FromServices] IHydraAdminClient adminClient,
+//		[FromQuery(Name = "login_challenge")] string loginChalleng,
+//		LoginViewModel viewModel) =>
+//	{
+//		var loginRequest = await adminClient.GetLoginRequestAsync(
+//			loginChalleng,
+//			httpContext.RequestAborted).ConfigureAwait(false);
+
+
+//	})
+//	.Accepts<LoginViewModel>("application/x-www-form-urlencoded");
 
 app.MapGet(
 	"/consent",

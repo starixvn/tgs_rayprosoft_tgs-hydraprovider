@@ -13,9 +13,13 @@ public static class ServiceCollectionExtensions
 			.AddHttpClient<IHydraAdminClient, HydraAdminClient>());
 
 		return services
+			.AddReverseProxy()
+			.Services
 			.RegisterAllServiceUtilityTypes(Assembly.GetExecutingAssembly(), ServiceLifetime.Transient)
 			.AddSingleton<IHashAlgorithmFactory, HashAlgorithmFactory>()
-			.AddTransient<ValidateService>()
-			.AddSerialNumberGenerator();
+			.AddTransient<IValidateService, ValidateService>()
+			.AddSerialNumberGenerator()
+			.AddSingleton<LoginPageConfiguration>()
+			.AddScoped<ILoginPageForwarder, LoginPageForwarder>();
 	}
 }

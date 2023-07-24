@@ -1,6 +1,6 @@
 ﻿namespace Tgs.HydraProvider;
 
-internal class ValidateService
+internal class ValidateService : IValidateService
 {
 	private readonly IHydraAdminClient _hydraAdminClient;
 	private readonly ITgsRepository _tgsRepository;
@@ -41,4 +41,18 @@ internal class ValidateService
 				cancellationToken).ConfigureAwait(false),
 			account);
 	}
+
+	public ValueTask<LoginResponse> AcceptLoginAsync(
+		string loginChallenge,
+		string subject,
+		LoginContext? loginContext,
+		CancellationToken cancellationToken = default)
+		=> _hydraAdminClient.AcceptLoginAsync(
+			loginChallenge,
+			subject,
+			loginContext,
+			cancellationToken);
+
+	public ValueTask<LoginResponse> RejectLoginAsync(string loginChallenge, CancellationToken cancellationToken = default)
+		=> _hydraAdminClient.RejectLoginAsync(loginChallenge, cancellationToken);
 }
