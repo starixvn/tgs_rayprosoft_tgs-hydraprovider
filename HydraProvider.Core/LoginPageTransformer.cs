@@ -35,7 +35,7 @@ internal class LoginPageTransformer : HttpTransformer
 			"/login.html",
 			QueryString.Empty);
 
-		proxyRequest.Headers.Host = proxyRequest.RequestUri.Host;
+		proxyRequest.Headers.Host = null;
 	}
 
 	public override async ValueTask<bool> TransformResponseAsync(
