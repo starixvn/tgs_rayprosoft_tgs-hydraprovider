@@ -1,4 +1,5 @@
 ﻿using FluentdForward.OpenTelemetry.MessagePack;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
@@ -37,7 +38,9 @@ builder.Services
 			builder.Configuration.GetValue<Uri>("Hydra:AdminUrl")!)
 		.AddLoggingHandler<IHydraAdminClient>())
 	.AddHydraProviderRepositories(dbBuilder => dbBuilder
-		.UseNpgsql("name=Tgs"));
+		.UseNpgsql("name=Tgs"))
+	.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders =
+		ForwardedHeaders.All);
 
 builder.Services
 	.AddSwaggerGen(options => options.SwaggerDoc(
@@ -71,6 +74,7 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
 app.MapGet("/", () => "Hello World!");
 
 app.MapGet(
