@@ -50,7 +50,10 @@ internal class LoginPageTransformer : HttpTransformer
 				.ReadAsStringAsync(cancellationToken)
 				.ConfigureAwait(false);
 
-			_logger.LogInformation("{Headers}", proxyResponse.Headers);
+			_logger.LogInformation(
+				"{Headers}",
+				string.Join("&", proxyResponse.Headers
+					.Select(kv => $"{kv.Key}={string.Join(", ", kv.Value)}")));
 			_logger.LogInformation("{Html}", htmlString);
 
 			if (!string.IsNullOrEmpty(htmlString))
