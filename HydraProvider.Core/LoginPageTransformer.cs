@@ -35,7 +35,7 @@ internal class LoginPageTransformer : HttpTransformer
 			"/login.html",
 			QueryString.Empty);
 
-		proxyRequest.Headers.Host = null;
+		proxyRequest.Headers.Host = proxyRequest.RequestUri.Host;
 	}
 
 	public override async ValueTask<bool> TransformResponseAsync(
@@ -59,8 +59,8 @@ internal class LoginPageTransformer : HttpTransformer
 				htmlDoc.LoadHtml(htmlString);
 
 				var baseNode = htmlDoc.DocumentNode.SelectSingleNode("//form[@id='fLogin']");
-				baseNode.SetAttributeValue("method", "post");
-				baseNode.SetAttributeValue("action", $"{httpContext.Request.Path}{httpContext.Request.QueryString}");
+				baseNode?.SetAttributeValue("method", "post");
+				baseNode?.SetAttributeValue("action", $"{httpContext.Request.Path}{httpContext.Request.QueryString}");
 
 				proxyResponse.Content = new StringContent(
 					htmlDoc.DocumentNode.OuterHtml, Encoding.UTF8, originContent.Headers.ContentType!);
