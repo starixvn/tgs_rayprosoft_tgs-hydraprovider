@@ -16,10 +16,15 @@ internal class LoginPageConfiguration
 		ConnectTimeout = TimeSpan.FromSeconds(15),
 	});
 
-	public LoginPageTransformer Transformer { get; } = new LoginPageTransformer();
-
 	public ForwarderRequestConfig RequestOptions { get; } = new ForwarderRequestConfig
 	{
 		ActivityTimeout = TimeSpan.FromSeconds(100)
 	};
+
+	public LoginPageTransformer Transformer { get; }
+
+	public LoginPageConfiguration(LoginPageTransformer loginPageTransformer)
+	{
+		Transformer = loginPageTransformer ?? throw new ArgumentNullException(nameof(loginPageTransformer));
+	}
 }

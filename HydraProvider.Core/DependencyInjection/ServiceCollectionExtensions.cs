@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
 			.AddSingleton<IHashAlgorithmFactory, HashAlgorithmFactory>()
 			.AddTransient<IValidateService, ValidateService>()
 			.AddSerialNumberGenerator()
+			.AddSingleton<LoginPageTransformer>()
 			.AddSingleton<LoginPageConfiguration>()
 			.AddScoped<ILoginPageForwarder, LoginPageForwarder>();
 	}
