@@ -34,7 +34,7 @@ internal class LoginPageTransformer : HttpTransformer
 			"/login.html",
 			QueryString.Empty);
 
-		_logger.LogInformation("Host: {Host}", proxyRequest.Headers.Host);
+		_logger.LogInformation("Host: {Host}, {Proxy}", proxyRequest.Headers.Host, proxyRequest.RequestUri.Host);
 
 		proxyRequest.Headers.Host = null;
 	}
