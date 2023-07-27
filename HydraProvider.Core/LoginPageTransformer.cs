@@ -28,7 +28,7 @@ internal class LoginPageTransformer : HttpTransformer
 			destinationPrefix,
 			cancellationToken).ConfigureAwait(false);
 
-		var queryContext = new QueryTransformContext(httpContext.Request);
+		proxyRequest.Headers.Add("X-Tunnel-Authorization", "tunnel eyJhbGciOiJFUzI1NiIsImtpZCI6IjNGMDM3NTk3MDlCNUI2REE1ODU3MkIyNjRENjE2QUZGQTQxMzA0MjciLCJ0eXAiOiJKV1QifQ.eyJjbHVzdGVySWQiOiJhc3NlIiwidHVubmVsSWQiOiJ6OXAwd3F2eiIsInNjcCI6ImNvbm5lY3QiLCJleHAiOjE2OTA1MjIyMTYsImlzcyI6Imh0dHBzOi8vdHVubmVscy5hcGkudmlzdWFsc3R1ZGlvLmNvbS8iLCJuYmYiOjE2OTA0MzQ5MTZ9.1XGAkZx09PIxwW9uruYZHiwejNTaC2jT2e9kgnnIOq2uKs4z9cfEvfTIR - sWOXiR04P_zhvJnPRrmomqnqKoyA");
 
 		proxyRequest.RequestUri = RequestUtilities.MakeDestinationAddress(
 			destinationPrefix,
