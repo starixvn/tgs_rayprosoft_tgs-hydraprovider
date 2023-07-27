@@ -13,13 +13,16 @@ public class LoginController : ControllerBase
 	{
 		var error = await forwarder.SendAsync(
 			HttpContext,
-			"http://localhost:4200",
+			"https://z9p0wqvz-7074.asse.devtunnels.ms",
 			HttpContext.RequestAborted).ConfigureAwait(false);
 
 		if (error != ForwarderError.None)
 		{
 			var errorFeature = HttpContext.Features.Get<IForwarderErrorFeature>();
 			var exception = errorFeature?.Exception;
+
+			if (exception is not null)
+				throw exception;
 		}
 	}
 
