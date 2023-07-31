@@ -2,16 +2,19 @@
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Yarp.ReverseProxy.Forwarder;
 
 namespace Tgs.HydraProvider;
 
 internal class LoginPageTransformer : HttpTransformer
 {
+	private readonly IOptionsMonitor<HydraProviderOptions> _optionsMonitor;
 	private readonly ILogger<LoginPageTransformer> _logger;
 
-	public LoginPageTransformer(ILogger<LoginPageTransformer> logger)
+	public LoginPageTransformer(IOptionsMonitor<HydraProviderOptions> optionsMonitor, ILogger<LoginPageTransformer> logger)
 	{
+		_optionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
@@ -27,7 +30,7 @@ internal class LoginPageTransformer : HttpTransformer
 			destinationPrefix,
 			cancellationToken).ConfigureAwait(false);
 
-		proxyRequest.Headers.Add("X-Tunnel-Authorization", "tunnel eyJhbGciOiJFUzI1NiIsImtpZCI6IjNGMDM3NTk3MDlCNUI2REE1ODU3MkIyNjRENjE2QUZGQTQxMzA0MjciLCJ0eXAiOiJKV1QifQ.eyJjbHVzdGVySWQiOiJhc3NlIiwidHVubmVsSWQiOiJ6OXAwd3F2eiIsInNjcCI6ImNvbm5lY3QiLCJleHAiOjE2OTA1MjI2MjQsImlzcyI6Imh0dHBzOi8vdHVubmVscy5hcGkudmlzdWFsc3R1ZGlvLmNvbS8iLCJuYmYiOjE2OTA0MzUzMjR9.7zeKAWT5Sr-w-WoO6xC2wQm96NTV9kYTeltf8DY_yntxgiRFKv-nYRFJCJoGaL69w1eZci1-3lcY1VMxafYZaQ");
+		proxyRequest.Headers.Add("X-Tunnel-Authorization", $"tunnel {_optionsMonitor.CurrentValue.DevTunnelToken}");
 
 		proxyRequest.RequestUri = RequestUtilities.MakeDestinationAddress(
 			destinationPrefix,

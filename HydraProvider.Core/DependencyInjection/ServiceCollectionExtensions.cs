@@ -15,6 +15,8 @@ public static class ServiceCollectionExtensions
 		return services
 			.AddReverseProxy()
 			.Services
+			.AddOptions<HydraProviderOptions>()
+			.Services
 			.RegisterAllServiceUtilityTypes(Assembly.GetExecutingAssembly(), ServiceLifetime.Transient)
 			.AddSingleton<IHashAlgorithmFactory, HashAlgorithmFactory>()
 			.AddTransient<IValidateService, ValidateService>()

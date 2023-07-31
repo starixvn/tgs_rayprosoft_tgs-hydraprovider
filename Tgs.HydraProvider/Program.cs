@@ -40,7 +40,9 @@ builder.Services
 	.AddHydraProviderRepositories(dbBuilder => dbBuilder
 		.UseNpgsql("name=Tgs"))
 	.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders =
-		ForwardedHeaders.All);
+		ForwardedHeaders.All)
+	.Configure<HydraProviderOptions>(options => options.DevTunnelToken =
+		builder.Configuration.GetValue<string>("Hydra:DevTunnelToken")!);
 
 builder.Services
 	.AddSwaggerGen(options => options.SwaggerDoc(
