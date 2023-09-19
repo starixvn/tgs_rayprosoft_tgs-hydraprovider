@@ -7,6 +7,12 @@ namespace Tgs.HydraProvider.Controllers;
 [ApiController]
 public class LoginController : ControllerBase
 {
+	private readonly ILogger<LoginController> _logger;
+
+	public LoginController(ILogger<LoginController> logger)
+	{
+		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
+	}
 	[HttpGet(Name = "GetLoginForm")]
 	public Task<string> GetLoginFormAsync(
 		//[FromServices] ILoginPageForwarder forwarder,
@@ -42,6 +48,8 @@ public class LoginController : ControllerBase
 
 		if (loginRequest is null)
 			return Results.BadRequest("Can't find login request.");
+
+		_logger.LogInformation("BrandId: {brandId}, UserName: {userName}, Password: {password}", viewModel.BrandId, viewModel.UserName, viewModel.Password);
 
 		var validateResult = await validateService.ValidateAsync(
 			loginRequest.Client.ClientName,
