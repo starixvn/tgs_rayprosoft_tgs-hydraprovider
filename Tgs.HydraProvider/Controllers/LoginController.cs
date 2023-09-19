@@ -8,22 +8,26 @@ namespace Tgs.HydraProvider.Controllers;
 public class LoginController : ControllerBase
 {
 	[HttpGet(Name = "GetLoginForm")]
-	public async Task GetLoginFormAsync(
-		[FromServices] ILoginPageForwarder forwarder)
+	public Task<string> GetLoginFormAsync(
+		[FromServices] ILoginPageForwarder forwarder,
+		[FromQuery(Name = "login_challeng")] string loginChalleng)
 	{
-		var error = await forwarder.SendAsync(
-			HttpContext,
-			"https://z9p0wqvz-7074.asse.devtunnels.ms",
-			HttpContext.RequestAborted).ConfigureAwait(false);
+		return Task.FromResult(loginChalleng);
+		//var error = await forwarder.SendAsync(
+		//	HttpContext,
+		//	"https://z9p0wqvz-7074.asse.devtunnels.ms",
+		//	HttpContext.RequestAborted).ConfigureAwait(false);
 
-		if (error != ForwarderError.None)
-		{
-			var errorFeature = HttpContext.Features.Get<IForwarderErrorFeature>();
-			var exception = errorFeature?.Exception;
+		//if (error != ForwarderError.None)
+		//{
+		//	var errorFeature = HttpContext.Features.Get<IForwarderErrorFeature>();
+		//	var exception = errorFeature?.Exception;
 
-			if (exception is not null)
-				throw exception;
-		}
+		//	if (exception is not null)
+		//		throw exception;
+		//}
+
+		//return Task.FromResult<string>();
 	}
 
 	[HttpPost(Name = "PostLogin")]
