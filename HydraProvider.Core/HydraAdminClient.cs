@@ -78,9 +78,9 @@ internal class HydraAdminClient : IHydraAdminClient
 			.FirstAsync(cancellationToken);
 
 	public ValueTask<LoginResponse> RejectLoginAsync(string challenge, CancellationToken cancellationToken = default)
-		=> _httpClient.PutAsync(
+		=> _httpClient.PutAsJsonAsync(
 			$"/admin/oauth2/auth/requests/login/reject{QueryString.Create("login_challenge", challenge)}",
-			null,
+			new RejectLoginRequest(401),
 			cancellationToken)
 			.ToAsyncEnumerable()
 			.Do(response => response.EnsureSuccessStatusCode())
