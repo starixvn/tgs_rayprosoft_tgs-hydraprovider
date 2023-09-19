@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Text.Json.Serialization;
-using System.Web;
+﻿using System.Text.Json.Serialization;
 
 namespace Tgs.HydraProvider;
 
@@ -11,25 +9,4 @@ public record LoginRequest(
 	string Subject,
 	OAuthClient Client,
 	[property: JsonPropertyName("request_url")] Uri RequestUri,
-	[property: JsonPropertyName("session_id")] string SessionId)
-{
-	public string? GetSystem()
-	{
-		var systemScope = Client.Scopes.Split(' ')
-			.Where(scope => scope.StartsWith("system:"))
-			.FirstOrDefault();
-
-		return systemScope?.Split(':').Last();
-	}
-
-	public Guid? GetBrandId()
-	{
-		var queryDict = HttpUtility.ParseQueryString(RequestUri.Query) ?? new NameValueCollection();
-
-		var brandId = queryDict.GetValues("brand_id")?.FirstOrDefault();
-
-		return brandId is null
-			? null
-			: Guid.Parse(brandId);
-	}
-}
+	[property: JsonPropertyName("session_id")] string SessionId);

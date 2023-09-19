@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Yarp.ReverseProxy.Forwarder;
+using Tgs.HydraProvider.ViewModels;
 
 namespace Tgs.HydraProvider.Controllers;
 
@@ -9,7 +9,7 @@ public class LoginController : ControllerBase
 {
 	[HttpGet(Name = "GetLoginForm")]
 	public Task<string> GetLoginFormAsync(
-		[FromServices] ILoginPageForwarder forwarder,
+		//[FromServices] ILoginPageForwarder forwarder,
 		[FromQuery(Name = "login_challenge")] string loginChallenge)
 	{
 		return Task.FromResult(loginChallenge);
@@ -31,13 +31,10 @@ public class LoginController : ControllerBase
 	}
 
 	[HttpPost(Name = "PostLogin")]
-	[Consumes("application/x-www-form-urlencoded")]
-	[Produces("text/html")]
 	public async Task<IResult> PostLoginAsync(
 		[FromServices] IValidateService validateService,
 		[FromQuery(Name = "login_challenge")] string loginChalleng,
-		[FromForm(Name = "userName")] string userName,
-		[FromForm(Name = "password")] string password)
+		[FromBody] LoginRequestViewModel viewModel)
 	{
 		var loginRequest = await validateService.GetLoginRequestAsync(
 			loginChalleng,
@@ -46,20 +43,11 @@ public class LoginController : ControllerBase
 		if (loginRequest is null)
 			return Results.BadRequest("Can't find login request.");
 
-		var system = loginRequest.GetSystem();
-
-		if (system is null)
-			return Results.BadRequest("Can't find system scope");
-
-		var brandId = loginRequest.GetBrandId();
-		if (brandId is null)
-			return Results.BadRequest("Can't get brand id.");
-
 		var validateResult = await validateService.ValidateAsync(
-			system,
-			brandId.Value,
-			userName,
-			password,
+			loginRequest.Client.ClientName,
+			viewModel.BrandId,
+			viewModel.UserName,
+			viewModel.Password,
 			HttpContext.RequestAborted).ConfigureAwait(false);
 
 		if (validateResult.IsValidate)
@@ -68,8 +56,8 @@ public class LoginController : ControllerBase
 				loginChalleng,
 				validateResult.Account!.UserName,
 				new LoginContext(
-					brandId.Value,
-					system,
+					viewModel.BrandId,
+					loginRequest.Client.ClientName,
 					validateResult.Account.Id),
 				HttpContext.RequestAborted).ConfigureAwait(false);
 

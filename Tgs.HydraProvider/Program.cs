@@ -29,7 +29,6 @@ builder.Logging
 builder.Services
 	.AddProblemDetails()
 	.AddAuthentication()
-	.AddHydraProviderBasic()
 	.Services
 	.AddControllers()
 	.Services
