@@ -10,9 +10,9 @@ public class LoginController : ControllerBase
 	[HttpGet(Name = "GetLoginForm")]
 	public Task<string> GetLoginFormAsync(
 		[FromServices] ILoginPageForwarder forwarder,
-		[FromQuery(Name = "login_challeng")] string loginChalleng)
+		[FromQuery(Name = "login_challenge")] string loginChallenge)
 	{
-		return Task.FromResult(loginChalleng);
+		return Task.FromResult(loginChallenge);
 		//var error = await forwarder.SendAsync(
 		//	HttpContext,
 		//	"https://z9p0wqvz-7074.asse.devtunnels.ms",
